@@ -1,0 +1,18 @@
+name: gateway
+image: ramiro/golang:1-nonroot
+command:
+- bash
+workdir: /okteto
+volumes:
+- /home/app/go
+- /home/app/.cache
+container: gateway
+securityContext:
+  runAsUser: 10001
+  fsGroup: 10001
+  capabilities:
+    add:
+    - SYS_PTRACE
+forward:
+- 8080:8080
+- 2345:2345
