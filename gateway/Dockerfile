@@ -68,7 +68,11 @@ ENV https_proxy     ""
 
 COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
 COPY assets     assets
-RUN sed -ie s/x86_64/${GOARCH}/g assets/script/funcstore.js && \
+ENV ARCH="x86_64"
+RUN export ARCH=$(uname -m)
+RUN if [ "$ARCH" = "armv7l" ] ; then export ARCH="armhf" ; elif [ "$ARCH" = "aarch64" ] ; then export ARCH=arm64; fi
+
+RUN sed -ie s/x86_64/${ARCH}/g assets/script/funcstore.js && \
   rm assets/script/funcstore.jse
 
 RUN chown -R app:app ./
